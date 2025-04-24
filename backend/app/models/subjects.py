@@ -1,0 +1,1 @@
+from .base import Basefrom sqlalchemy.orm import mapped_column, Mappedfrom sqlalchemy import String, Integerclass Subject(Base):    __tablename__ = 'Subjects'    id: Mapped[int] = mapped_column('id', Integer, primary_key=True)    sub_name: Mapped[str] = mapped_column('sub_name', String(100), nullable=False)

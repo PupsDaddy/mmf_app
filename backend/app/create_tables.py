@@ -1,0 +1,1 @@
+from backend.app.models.base import Basefrom backend.app.models.subjects import Subjectfrom database import enginefrom sqlalchemy import Enginedef create_tables(engine:Engine, baseClass):    baseClass.metadata.create_all(engine)    return 'OK'create_tables(engine, Base)

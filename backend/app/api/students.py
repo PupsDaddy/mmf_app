@@ -1,0 +1,1 @@
+from fastapi import APIRouterrouter = APIRouter(tags=['students'], prefix='/students')@router.get('/{id}')def get_stud_by_id(id: int):    pass
