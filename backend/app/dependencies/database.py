@@ -1,1 +1,1 @@
-from backend.app.database import get_sessionfrom sqlalchemy.orm import Sessionfrom typing import Annotatedfrom fastapi import DependsSessionDep = Annotated[Session, Depends(get_session)]
+from backend.app.database import get_sessionfrom sqlalchemy.orm import Sessionfrom typing import Annotatedfrom fastapi import DependsSessionDep = Annotated[Session, Depends(get_session)]

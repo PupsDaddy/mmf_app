@@ -1,0 +1,1 @@
+import osfrom dotenv import load_dotenvload_dotenv()class Config:    DATABASE_URL = (f'{os.getenv("DB_DRIVER")}://{os.getenv("DB_USER")}'                    f':{os.getenv("DB_PASSWORD")}@{os.getenv("DB_HOST")}'                    f':{os.getenv("DB_PORT")}/{os.getenv("DB_NAME")}')
