@@ -1,0 +1,1 @@
+from pydantic import BaseModel, Fieldclass User(BaseModel):    id: int    login: str = Field(max_length=70)    password: str = Field(max_length=70)
