@@ -1,0 +1,29 @@
+.green-button {
+  background-color: rgb(19, 118, 62) !important;
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: 0.4s !important;
+  border-width: 1.5px !important;
+  border-color: rgb(19, 118, 62) !important;
+}
+.green-button:hover {
+  color: rgb(19, 118, 62) !important;
+  background-color: white !important;
+  border-color: rgb(19, 118, 62) !important;
+}
+
+.white-button {
+  color: rgb(19, 118, 62) !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: 0.4s !important;
+  border-width: 1.5px !important;
+  border-color: rgb(19, 118, 62) !important;
+}
+.white-button:hover {
+  color: white !important;
+  background-color: rgb(19, 118, 62) !important;
+  border-color: rgb(19, 118, 62) !important;
+}
