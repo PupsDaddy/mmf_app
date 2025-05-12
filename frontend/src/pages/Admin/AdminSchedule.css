@@ -1,0 +1,58 @@
+.admin-container {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.schedule-tabs .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.schedule-tabs .ant-tabs-tab {
+  padding: 12px 24px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.schedule-tabs .ant-tabs-tab:hover {
+  color: #52c41a;
+}
+
+.schedule-tabs .ant-tabs-tab-active {
+  background-color: #f6ffed;
+  border-radius: 4px;
+}
+
+.schedule-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #1a3a1a !important;
+  font-weight: 600;
+}
+
+.schedule-tabs .ant-tabs-ink-bar {
+  background: #52c41a !important;
+}
+
+/* Адаптивные стили */
+@media screen and (max-width: 1200px) {
+  .admin-container {
+    padding: 16px;
+  }
+
+  .schedule-tabs .ant-tabs-tab {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .admin-container {
+    padding: 12px;
+  }
+
+  .schedule-tabs .ant-tabs-tab {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}

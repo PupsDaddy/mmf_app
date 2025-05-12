@@ -1,0 +1,65 @@
+.group-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  color: #000;
+}
+
+.group-course {
+  font-weight: normal;
+}
+
+.group-course-value {
+  font-weight: bold;
+}
+
+.group-number {
+  font-weight: normal;
+}
+
+.group-number-value {
+  font-weight: bold;
+}
+
+.group-speciality {
+  font-weight: normal;
+}
+
+.group-speciality-value {
+  font-weight: bold;
+}
+
+/* Стили для выбранного значения */
+.ant-select-selection-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #000;
+}
+
+/* Стили для вариантов предмета-семестра */
+.subsem-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  color: #000;
+}
+
+.subsem-name {
+  font-weight: bold;
+  min-width: 60px;
+}
+
+.subsem-semester,
+.subsem-speciality,
+.subsem-year {
+  font-weight: normal;
+}
+
+.subsem-semester-value,
+.subsem-speciality-value,
+.subsem-year-value {
+  font-weight: bold;
+}
