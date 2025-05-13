@@ -3,6 +3,7 @@ import { Table, Select, Space, Button, Tabs, Modal } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import InsertStudentScheduleModal from './InsertStudentScheduleModal';
 import './ScheduleTable.css';
 
 const StudentSchedule = () => {
@@ -13,6 +14,7 @@ const StudentSchedule = () => {
   const [scheduleData, setScheduleData] = useState([]);
   const [groupId, setGroupId] = useState(null);
   const [pairToDelete, setPairToDelete] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Mock data for dropdowns
   const courses = [
@@ -120,6 +122,10 @@ const StudentSchedule = () => {
     }
   };
 
+  const handleAdd = (newData) => {
+    setScheduleData([...scheduleData, newData]);
+  };
+
   const renderScheduleCell = (day, pairNumber) => {
     const daySchedule = scheduleData.filter(pair => pair.week_day === parseInt(day));
     const pair = daySchedule.find(p => p.n_class === pairNumber);
@@ -127,7 +133,13 @@ const StudentSchedule = () => {
     if (!pair) {
       return (
         <div className="schedule-cell empty">
-          <div className="add-pair-button">+</div>
+          <Button 
+            type="primary" 
+            className="add-pair-button" 
+            onClick={() => setIsModalVisible(true)}
+          >
+            +
+          </Button>
         </div>
       );
     }
@@ -224,6 +236,11 @@ const StudentSchedule = () => {
           }}
         />
       )}
+      <InsertStudentScheduleModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onAdd={handleAdd}
+      />
     </div>
   );
 };
