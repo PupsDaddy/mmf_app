@@ -16,6 +16,12 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
     setError(null);
   };
 
+  const resetForm = () => {
+    if (formRef.current) {
+      formRef.current.reset(); // Предполагается, что в InsertFormTeacherSubSem есть метод reset
+    }
+  };
+
   const handleOk = async () => {
     if (formRef.current) {
       try {
@@ -25,16 +31,6 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
 
         if (!formData.teacher_id) {
           setError('Выберите преподавателя из списка');
-          return;
-        }
-
-        // Проверяем существование связи
-        const checkResponse = await axios.get(
-          `http://127.0.0.1:8000/teachers_subjects_semester/check_exists?teacher_id=${formData.teacher_id}&sub_semester_id=${formData.sub_sem_id}&class_type=${formData.class_type}&sub_group=${formData.sub_group}&group_id=${formData.group_id}`
-        );
-
-        if (checkResponse.data.exists) {
-          setError('Такая запись уже существует');
           return;
         }
 
@@ -50,6 +46,7 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
         await axios.post('http://127.0.0.1:8000/teachers_subjects_semester/', new_obj);
         
         setIsModalOpen(false);
+        resetForm(); // Очищаем форму после успешного добавления
         onSuccess();
       } catch (error) {
         console.error('Error in handleOk:', error);
@@ -58,6 +55,8 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
             setError('Предмет-семестр или группа не найдены');
           } else if (error.response.status === 422) {
             setError('Некорректные данные: ' + (error.response.data.detail || 'Проверьте все поля'));
+          } else if (error.response.status === 409) {
+            setError('Такая запись уже существует!');
           } else {
             setError('Произошла ошибка при сохранении');
           }
@@ -73,6 +72,7 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setError(null);
+    resetForm(); // Очищаем форму при закрытии модала
   };
 
   return (

@@ -55,17 +55,8 @@ const TeacherSchedule = () => {
       if (!selectedTeacher || !selectedWeek) return;
 
       try {
-        // TODO: Замените на ваш реальный запрос к API
-        // Пример параметров запроса:
-        // const response = await axios.get('/api/teacher-schedule', {
-        //   params: {
-        //     teacher_id: selectedTeacher,
-        //     n_week: selectedWeek,
-        //     n_week_day: selectedDay || null,
-        //     semester: selectedSemester
-        //   }
-        // });
-        // setScheduleData(response.data);
+        const response = await axios.get(`http://127.0.0.1:8000/schedule/`)
+        setScheduleData(response.data);
       } catch (error) {
         console.error('Error fetching schedule:', error);
       }
