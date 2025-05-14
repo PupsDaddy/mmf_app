@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs } from 'antd';
 import StudentSchedule from '../../components/AdminSchedule/StudentSchedule';
-import TeacherSchedule from '../../components/AdminSchedule/TeacherSchedule';
 import './AdminSchedule.css';
 
 const AdminSchedule = () => {
@@ -12,11 +11,6 @@ const AdminSchedule = () => {
       key: 'students',
       label: 'Расписание студентов',
       children: <StudentSchedule />,
-    },
-    {
-      key: 'teachers',
-      label: 'Расписание преподавателей',
-      children: <TeacherSchedule />,
     },
   ];
 

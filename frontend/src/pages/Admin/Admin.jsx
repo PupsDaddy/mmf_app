@@ -1,7 +1,6 @@
 import AdminSubSemester from "../Admin/AdminSubSemester";
 import AdminTeacherSubSemester from "../Admin/AdminTeacherSubSemester";
 import StudentSchedule from "../../components/AdminSchedule/StudentSchedule";
-import TeacherSchedule from "../../components/AdminSchedule/TeacherSchedule";
 import React, { useState } from 'react';
 import {
   MenuFoldOutlined,
@@ -58,7 +57,7 @@ const App = () => {
           trigger={null} 
           collapsible 
           collapsed={collapsed}
-          width={180}
+          width={200}
           style={{ 
             background: '#1a3a1a',
             position: 'fixed',
@@ -96,24 +95,12 @@ const App = () => {
               {
                 key: '1-3',
                 icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
-                label: 'Расписание',
-                children: [
-                  {
-                    key: '1-3-1',
-                    icon: <TeamIcon style={{ fontSize: '24px' }} />,
-                    label: 'Расписание студентов',
-                  },
-                  {
-                    key: '1-3-2',
-                    icon: <UserOutlined style={{ fontSize: '24px' }} />,
-                    label: 'Расписание преподавателей',
-                  }
-                ]
-              }
+                label: 'Расписание студентов',
+              },
             ]}
           />
         </Sider>
-        <Layout style={{ marginLeft: collapsed ? 80 : 180 }}>
+        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header style={{ 
             padding: 0, 
             background: '#1a3a1a',
@@ -125,7 +112,7 @@ const App = () => {
             justifyContent: 'space-between',
             padding: '0 24px',
             position: 'fixed',
-            width: `calc(100% - ${collapsed ? 80 : 180}px)`,
+            width: `calc(100% - ${collapsed ? 80 : 200}px)`,
             zIndex: 1
           }}>
             <div style={{ 
@@ -161,8 +148,7 @@ const App = () => {
           >
             {selectedKey.includes('1-1') && <AdminSubSemester userType="teachers" />}
             {selectedKey.includes('1-2') && <AdminTeacherSubSemester userType="students" />}
-            {selectedKey.includes('1-3-1') && <StudentSchedule />}
-            {selectedKey.includes('1-3-2') && <TeacherSchedule />}
+            {selectedKey.includes('1-3') && <StudentSchedule />}
           </Content>
         </Layout>
       </Layout>

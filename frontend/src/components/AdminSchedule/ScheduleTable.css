@@ -207,18 +207,19 @@
   height: 40px;
   border-radius: 50%;
   background-color: transparent;
-  border: 2px dashed black;
-  color: black;
+  border: 2px dashed black !important;
+  color: black !important;
   font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, opacity 0.3s;
 }
 
 .add-pair-button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  opacity: 0.8 !important;
 }
 
 /* Цвета для ячеек дней */
@@ -389,5 +390,11 @@
   .schedule-tabs .ant-tabs-tab {
     padding: 8px 16px;
     font-size: 14px;
+  }
+
+  .add-pair-button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
   }
 }

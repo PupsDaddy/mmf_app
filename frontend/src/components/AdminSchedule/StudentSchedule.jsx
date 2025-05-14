@@ -133,8 +133,10 @@ const StudentSchedule = () => {
     if (!pair) {
       return (
         <div className="schedule-cell empty">
+          <div style={{ position: 'absolute', top: 5, left: 5, fontWeight: 'bold' }}>
+            {`Пара ${pairNumber}`}
+          </div>
           <Button 
-            type="primary" 
             className="add-pair-button" 
             onClick={() => setIsModalVisible(true)}
           >

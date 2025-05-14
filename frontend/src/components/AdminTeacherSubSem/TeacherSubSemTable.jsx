@@ -40,6 +40,7 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
   const [modalPositionFilter, setModalPositionFilter] = useState(null);
   const [modalTeachers, setModalTeachers] = useState([]);
   const [isModalLoading, setIsModalLoading] = useState(false);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -197,10 +198,11 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
     }
   };
 
-  const handleModalOk = async (selectedTeacherId) => {
+  const handleModalOk = async () => {
     try {
-      await axios.put(`http://127.0.0.1:8000/teachers_subjects_semester/${selectedRecord.id}`, {
-        teacher_id: selectedTeacherId
+      console.log(selectedRecord.id, {new_teacher_id:selectedTeacherId})
+      await axios.patch(`http://127.0.0.1:8000/teachers_subjects_semester/${selectedRecord.id}`, {
+        new_teacher_id: selectedTeacherId || null
       });
       setIsModalVisible(false);
       // Обновляем данные после изменения
@@ -220,14 +222,14 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              {teacher ? (
+              {teacher.teacher_surname !== undefined? (
                 <>
                   <div>{teacher.teacher_surname} {teacher.teacher_name?.[0]}.{teacher.teacher_father_name?.[0]}.</div>
                   <div style={{ fontSize: 13, color: '#888' }}>{teacher.teacher_position}</div>
                   <div style={{ fontSize: 13, color: '#888' }}>{teacher.department}</div>
                 </>
               ) : (
-                <div style={{ color: '#888' }}>...</div>
+                <div style={{ color: '#888' }}>Нет преподавателя <br /> Нет информации о преподавателе</div>
               )}
             </div>
             <Button 
@@ -468,34 +470,29 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
             />
           </Space>
         </div>
-        <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+        <div style={{ marginBottom: 16 }}>
           {isModalLoading ? (
             <div style={{ textAlign: 'center', padding: '20px' }}>Загрузка...</div>
           ) : (
-            <Table
-              dataSource={modalTeachers}
-              columns={[
-                {
-                  title: 'ФИО',
-                  dataIndex: 'teacher_surname',
-                  key: 'teacher_surname',
-                  render: (_, record) => (
-                    <Button
-                      type="text"
-                      style={{ textAlign: 'left', padding: 0 }}
-                      onClick={() => handleModalOk(record.id)}
-                    >
-                      {`${record.teacher_surname} ${record.teacher_name?.[0]}.${record.teacher_father_name?.[0]}.`}
-                    </Button>
-                  )
-                }
-              ]}
-              pagination={false}
-              size="small"
-              rowKey="id"
-            />
+            <Select
+              style={{ width: '100%', maxHeight: 200, overflowY: 'auto' }}
+              placeholder="Выберите преподавателя"
+              onChange={(value) => setSelectedTeacherId(value)}
+              allowClear
+            >
+              <Select.Option value={null}>Нет преподавателя</Select.Option>
+              {modalTeachers.map(teacher => (
+                <Select.Option key={teacher.id} value={teacher.id}>
+                  {`${teacher.teacher_surname} ${teacher.teacher_name?.[0]}.${teacher.teacher_father_name?.[0]}.`}
+                </Select.Option>
+              ))}
+            </Select>
           )}
         </div>
+        <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button onClick={() => setIsModalVisible(false)}>Отмена</Button>
+          <Button type="primary" onClick={handleModalOk}>OK</Button>
+        </Space>
       </Modal>
     </div>
   );
