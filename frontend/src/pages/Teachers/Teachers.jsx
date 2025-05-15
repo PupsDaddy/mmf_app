@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
 import { Link } from 'react-router-dom';
+import TeachersPreStudy from '../../components/TeachersPreStudy/TeachersPreStudy';
 
 const { Header, Sider, Content } = Layout;
 
@@ -51,7 +52,7 @@ const Teachers = () => {
       case '1-2':
         return <div>Расписание</div>;
       case '1-3':
-        return <div>Занятия</div>;
+        return <TeachersPreStudy />;
       default:
         return null;
     }
