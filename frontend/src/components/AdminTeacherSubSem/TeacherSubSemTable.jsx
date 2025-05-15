@@ -200,14 +200,28 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
 
   const handleModalOk = async () => {
     try {
-      console.log(selectedRecord.id, {new_teacher_id:selectedTeacherId})
+      console.log(selectedRecord.id, { new_teacher_id: selectedTeacherId });
+      
+      // Выполняем запрос на обновление данных
       await axios.patch(`http://127.0.0.1:8000/teachers_subjects_semester/${selectedRecord.id}`, {
         new_teacher_id: selectedTeacherId || null
       });
+      
+      // Закрываем модальное окно
       setIsModalVisible(false);
-      // Обновляем данные после изменения
-      const response = await axios.get('http://127.0.0.1:8000/teachers_subjects_semester/all');
-      setAcademicData(response.data);
+      
+      // Обновляем данные в состоянии
+      setAcademicData(prevData => {
+        return prevData.map(item => {
+          if (item.id === selectedRecord.id) {
+            return {
+              ...item,
+              teacher_id: selectedTeacherId // Обновляем только нужное поле
+            };
+          }
+          return item;
+        });
+      });
     } catch (error) {
       console.error('Error updating teacher:', error);
     }

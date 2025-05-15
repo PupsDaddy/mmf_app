@@ -1,7 +1,8 @@
-import React, { useState , useEffect} from 'react';
-import { Table, Select, Input, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Select, Input, Button, message } from 'antd';
 import axios from 'axios';
 import './SubSemTable.css';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 const SubSemTable = ({ refreshTrigger }) => {
 
@@ -10,6 +11,9 @@ const SubSemTable = ({ refreshTrigger }) => {
   const [subjectsList, setSubjectsList]  = useState([]);
   const [plansList, setPlansList]  = useState([]);
   const [academicData, setAcademicData] = useState([]);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -65,6 +69,33 @@ const SubSemTable = ({ refreshTrigger }) => {
   const semesterOptions = [...new Set(academicData.map(item => item.semester))]
     .sort()
     .map(sem => ({ text: `${sem}`, value: sem }));
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setIsModalVisible(true);
+    setErrorMessage('');
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://0.0.0.0:8000/subjects_semester/${deleteId}`);
+      message.success('Запись успешно удалена');
+      setAcademicData(prevData => prevData.filter(item => item.id !== deleteId));
+      setIsModalVisible(false);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setErrorMessage('Запись не найдена');
+        } else if (error.response.status === 409) {
+          setErrorMessage(error.response.data.detail);
+        } else {
+          setErrorMessage('Не удалось удалить запись');
+        }
+      } else {
+        setErrorMessage('Не удалось подключиться к серверу');
+      }
+    }
+  };
 
   const columns = [
     {
@@ -193,6 +224,18 @@ const SubSemTable = ({ refreshTrigger }) => {
         return String(record.plan_data[planFilterAttr]).toLowerCase()
           .includes(value.toLowerCase());
       }
+    },
+    {
+      title: 'Действия',
+      key: 'action',
+      render: (_, record) => (
+        <Button 
+          className="red-button"
+          onClick={() => handleDelete(record.id)}
+        >
+          Удалить
+        </Button>
+      )
     }
   ];
 
@@ -223,6 +266,12 @@ const SubSemTable = ({ refreshTrigger }) => {
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         }}
         className="custom-table"
+      />
+      <ConfirmDeleteModal 
+        visible={isModalVisible} 
+        onConfirm={confirmDelete} 
+        onCancel={() => setIsModalVisible(false)} 
+        errorMessage={errorMessage}
       />
     </div>
   );

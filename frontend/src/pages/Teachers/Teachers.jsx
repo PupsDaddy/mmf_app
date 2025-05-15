@@ -1,24 +1,17 @@
-import AdminSubSemester from "../Admin/AdminSubSemester";
-import AdminTeacherSubSemester from "../Admin/AdminTeacherSubSemester";
-import StudentSchedule from "../../components/AdminSchedule/StudentSchedule";
 import React, { useState } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  BookOutlined,
-  TeamOutlined,
-  CalendarOutlined,
   UserOutlined,
-  TeamOutlined as TeamIcon,
-  HomeOutlined
+  CalendarOutlined,
+  BookOutlined
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
 import { Link } from 'react-router-dom';
 
-
 const { Header, Sider, Content } = Layout;
 
-const Admin = () => {
+const Teachers = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1-1');
   
@@ -36,10 +29,8 @@ const Admin = () => {
         activeBarWidth: 0,
         itemActiveBg: '#1a3a1a',
         itemSelectedBg: '#2d5a2d',
-        // Увеличиваем размер иконок
         iconSize: 20,
         itemMarginInline: 12,
-        // Увеличиваем размер текста
         itemHeight: 48,
         fontSize: 16,
       },
@@ -56,11 +47,11 @@ const Admin = () => {
   const renderContent = () => {
     switch (selectedKey) {
       case '1-1':
-        return <AdminSubSemester />;
+        return <div>Личный кабинет преподавателя</div>;
       case '1-2':
-        return <AdminTeacherSubSemester />;
+        return <div>Расписание</div>;
       case '1-3':
-        return <StudentSchedule />;
+        return <div>Занятия</div>;
       default:
         return null;
     }
@@ -100,18 +91,18 @@ const Admin = () => {
             items={[
               {
                 key: '1-1',
-                icon: <BookOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Предмет-семестр</Link>,
+                icon: <UserOutlined style={{ fontSize: '24px' }} />,
+                label: <Link to="">Личный кабинет</Link>,
               },
               {
                 key: '1-2',
-                icon: <TeamOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Преподаватель-предмет-семестр</Link>,
+                icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
+                label: <Link to="">Расписание</Link>,
               },
               {
                 key: '1-3',
-                icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Расписание</Link>,
+                icon: <BookOutlined style={{ fontSize: '24px' }} />,
+                label: <Link to="">Занятия</Link>,
               },
             ]}
           />
@@ -170,4 +161,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default  Teachers;
