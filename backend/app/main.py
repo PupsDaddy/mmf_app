@@ -7,6 +7,7 @@ from backend.app.api.syllabuses import router as sylla_router
 from backend.app.api.teachers_subjects_semester import router as tss_router
 from backend.app.api.teachers import router as teacher_router
 from backend.app.api.schedule import router as schedule_router
+from backend.app.api.attendance_classes import router as attendance_classes_router
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -30,6 +31,7 @@ app.include_router(sylla_router)
 app.include_router(tss_router)
 app.include_router(teacher_router)
 app.include_router(schedule_router)
+app.include_router(attendance_classes_router)
 
 if __name__ == "__main__":
     uvicorn.run('main:app', reload=True, host="0.0.0.0", port=8000) 

@@ -5,6 +5,7 @@ import Admin from './pages/Admin/Admin';
 import Login from './pages/Login/Login';
 import Teachers from './pages/Teachers/Teachers';
 import Students from './pages/Students/Students';
+import StudentReport from './components/TeachersPreStudy/StudentReport';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/teachers" element={<Teachers />} />
           <Route path="/students" element={<Students />} />
+          <Route path="/student-report" element={<StudentReport />} />
         </Routes>
       </Router>
     </AntdApp>
