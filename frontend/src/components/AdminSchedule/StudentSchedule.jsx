@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Table, Select, Space, Button, Tabs, Modal } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import DeleteConfirmModal from './DeleteConfirmModal';
 import InsertStudentScheduleModal from './InsertStudentScheduleModal';
 import './ScheduleTable.css';
 
@@ -15,6 +14,12 @@ const StudentSchedule = () => {
   const [groupId, setGroupId] = useState(null);
   const [pairToDelete, setPairToDelete] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pairsToDelete, setPairsToDelete] = useState([]);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedPair, setSelectedPair] = useState(null);
+  const [curse, setCurse] = useState(1);
+  const [group_number, setGroupNumber] = useState(5);
+  const [selectedClass, setSelectedClass] = useState(null);
 
   // Mock data for dropdowns
   const courses = [
@@ -69,7 +74,6 @@ const StudentSchedule = () => {
   }, [selectedCourse, selectedGroup]);
 
   // Получаем расписание при изменении ID группы или недели
-  useEffect(() => {
     const fetchSchedule = async () => {
       if (!groupId || !selectedWeek) {
         setScheduleData([]);
@@ -95,6 +99,7 @@ const StudentSchedule = () => {
       }
     };
 
+  useEffect(() => {
     fetchSchedule();
   }, [groupId, selectedWeek]);
 
@@ -102,71 +107,137 @@ const StudentSchedule = () => {
     setSelectedWeek(week);
   };
 
-  const handleDelete = async (pair) => {
+  const deletePair = async (scheduleId) => {
     try {
-      console.log('Deleting schedule with ID:', pair.schedule_id);
-      const deleteResponse = await axios.delete(`http://127.0.0.1:8000/schedule/${pair.schedule_id}`);
-      console.log('Delete response:', deleteResponse);
-
-      // Перезагружаем данные после удаления
-      console.log('Reloading schedule for group:', groupId, 'week:', selectedWeek);
-      const response = await axios.get(`http://127.0.0.1:8000/schedule/${groupId}/${selectedWeek}`);
-      console.log('New schedule data:', response.data);
-      setScheduleData(response.data);
+      console.log('Deleting schedule with ID:', scheduleId);
+      await axios.delete(`http://127.0.0.1:8000/schedule/${scheduleId}`);
+      return true; // Return true if deletion is successful
     } catch (error) {
       console.error('Error in delete operation:', error);
       Modal.error({
         title: 'Ошибка при удалении',
         content: 'Не удалось удалить пару. Пожалуйста, попробуйте снова.',
       });
+      return false; // Return false if there was an error
     }
   };
 
-  const handleAdd = (newData) => {
-    setScheduleData([...scheduleData, newData]);
+  const handleDelete = (pair) => {
+    const daySchedule = scheduleData.filter(p => p.week_day === pair.week_day && p.n_class === pair.n_class);
+    
+    if (daySchedule.length > 1) {
+      setPairsToDelete(daySchedule);
+      setIsDeleteModalVisible(true);
+    } else {
+      deletePair(daySchedule[0].schedule_id); // Directly delete if only one class
+    }
+  };
+
+  const handleAdd = async (newData) => {
+    console.log('Добавление расписания:', newData);
+  
+    const weekDays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+    const weekDayIndex = weekDays.indexOf(selectedDay) + 1;
+  
+    if (weekDayIndex === 0) {
+      console.error('Invalid selected day:', selectedDay);
+      Modal.error({
+        title: 'Ошибка',
+        content: 'Выберите корректный день недели',
+      });
+      return;
+    }
+  
+    const payload = {
+      ...newData,
+      week_day: weekDayIndex,
+      group_id: groupId,
+      week_number: selectedWeek
+    };
+  
+    try {
+      // Добавляем индикатор загрузки
+      setIsModalVisible(false); // Сразу закрываем модальное окно
+      
+      const response = await axios.post('http://127.0.0.1:8000/schedule', payload);
+      console.log('Успешно добавлено:', response.data);
+      
+      // Форсированное обновление данных
+      await fetchSchedule();
+      
+      // Показываем уведомление об успехе
+      Modal.success({
+        title: 'Успех',
+        content: 'Пара успешно добавлена в расписание',
+      });
+    } catch (error) {
+      console.error('Error adding schedule:', error);
+      Modal.error({
+        title: 'Ошибка при добавлении',
+        content: error.response?.data?.message || 'Не удалось добавить пару. Пожалуйста, попробуйте снова.',
+      });
+    }
+  };
+
+  const openModal = (n_class) => {
+    setSelectedClass(n_class); // Устанавливаем номер ячейки
+    setIsModalVisible(true);
   };
 
   const renderScheduleCell = (day, pairNumber) => {
-    const daySchedule = scheduleData.filter(pair => pair.week_day === parseInt(day));
-    const pair = daySchedule.find(p => p.n_class === pairNumber);
-
-    if (!pair) {
-      return (
-        <div className="schedule-cell empty">
-          <div style={{ position: 'absolute', top: 5, left: 5, fontWeight: 'bold' }}>
-            {`Пара ${pairNumber}`}
-          </div>
-          <Button 
-            className="add-pair-button" 
-            onClick={() => setIsModalVisible(true)}
-          >
-            +
-          </Button>
-        </div>
-      );
-    }
+    // Группируем пары по week_day и n_class
+    const daySchedule = scheduleData.filter(pair => pair.week_day === parseInt(day) && pair.n_class === pairNumber);
 
     return (
-      <div className="schedule-cell" data-id={pair.schedule_id}>
-        <div className="schedule-cell-content">
+      <div className="schedule-cell" data-id={daySchedule[0]?.schedule_id}>
+        <div className="schedule-cell-content" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', height: '100%' }}>
+          {daySchedule.length > 0 ? (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
+                {daySchedule.map((pair, index) => (
+                  <div key={index} style={{ flex: 1, margin: '0 4px', minWidth: '100px' }}>
           <div className="pair-number">№{pair.n_class}</div>
           <div className="subject">{`${pair.sub_name} | ${pair.class_type}${pair.sub_group ? ` | ${pair.sub_group}` : ''}`}</div>
           <div className="teacher">{`${pair.teacher_surname} ${pair.teacher_name[0]}.${pair.teacher_father_name[0]}.`}</div>
           <div className="room">Ауд. <strong>{pair.class_room}</strong></div>
           <div className="time">{`${pair.start_time.slice(0, 5)} - ${pair.end_time.slice(0, 5)}`}</div>
         </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                <Button 
+                  className="add-pair-button" 
+                  onClick={() => openModal(pairNumber)} // Открываем модал для добавления
+                  style={{ fontSize: '10px', borderRadius: '2px', padding: '2px 4px' }} // Уменьшаем размер кнопки
+                >
+                  +
+                </Button>
         <Button 
           type="text" 
           className="delete-button"
           icon={<DeleteOutlined />}
           onClick={(e) => {
             e.stopPropagation();
-            const cell = e.currentTarget.closest('.schedule-cell');
-            const scheduleId = cell.getAttribute('data-id');
+                    const scheduleId = daySchedule[0]?.schedule_id; // Используем ID первой пары для удаления
             console.log('Deleting pair with schedule_id:', scheduleId);
-            setPairToDelete({ ...pair, schedule_id: scheduleId });
+                    setPairsToDelete(daySchedule); // Set pairs to delete
+                    setIsDeleteModalVisible(true); // Open the delete modal
           }}
         />
+              </div>
+            </>
+          ) : (
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Button 
+                className="add-pair-button" 
+                onClick={() => openModal(pairNumber)}
+                style={{ fontSize: '16px', borderRadius: '4px', padding: '4px 8px' }} // Увеличиваем размер кнопки
+              >
+                +
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -187,6 +258,17 @@ const StudentSchedule = () => {
     key: i + 1,
     pairNumber: i + 1
   }));
+
+  // Логика модала подтверждения удаления
+  const handleConfirmDelete = async () => {
+    if (selectedPair) {
+      const success = await deletePair(selectedPair);
+      if (success) {
+        await fetchSchedule(); // Обновляем расписание после удаления
+        setIsDeleteModalVisible(false); // Закрываем модал, если удаление прошло успешно
+      }
+    }
+  };
 
   return (
     <div className="schedule-table-container">
@@ -229,22 +311,44 @@ const StudentSchedule = () => {
           bordered
         />
       </Space>
-      {pairToDelete && (
-        <DeleteConfirmModal
-          pair={pairToDelete}
-          onConfirm={() => {
-            handleDelete(pairToDelete);
-            setPairToDelete(null);
+      {isDeleteModalVisible && (
+        <Modal
+          title="Выберите пару для удаления"
+          visible={isDeleteModalVisible}
+          onOk={handleConfirmDelete}
+          onCancel={() => {
+            setIsDeleteModalVisible(false);
+            setPairsToDelete([]); // Очищаем пары на отмену
           }}
-        />
+        >
+          <Select
+            placeholder="Выберите пару для удаления"
+            style={{ width: '100%' }}
+            onChange={(value) => {
+              setSelectedPair(value);
+              console.log('Выбранный schedule_id:', value);
+            }}
+          >
+            {pairsToDelete.map(pair => (
+              <Select.Option key={pair.schedule_id} value={pair.schedule_id}>
+                {`${pair.sub_name} | ${pair.class_type} | ${pair.sub_group}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </Modal>
       )}
       <InsertStudentScheduleModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onAdd={handleAdd}
+        curse={selectedCourse}
+        group_number={selectedGroup}
+        n_class={selectedClass}
+        group_id={groupId}
       />
     </div>
   );
 };
 
 export default StudentSchedule; 
+

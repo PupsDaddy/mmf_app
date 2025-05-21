@@ -180,7 +180,7 @@ const StudentReport = () => {
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                 <div>
                                                     <Button 
-                                                        className='delete-date-button'
+                                                        className='delete-date-button button-spacing'
                                                         type="danger" 
                                                         onClick={() => {
                                                             setDateToDelete(date);
@@ -190,6 +190,7 @@ const StudentReport = () => {
                                                         Удалить
                                                     </Button>
                                                     <Button 
+                                                        className='button-spacing'
                                                         type="primary" 
                                                         onClick={() => handleEditToggle(date)}
                                                     >

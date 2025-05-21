@@ -1,7 +1,7 @@
 import AdminSubSemester from "../Admin/AdminSubSemester";
 import AdminTeacherSubSemester from "../Admin/AdminTeacherSubSemester";
 import StudentSchedule from "../../components/AdminSchedule/StudentSchedule";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -13,7 +13,7 @@ import {
   HomeOutlined
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 const { Header, Sider, Content } = Layout;
@@ -21,7 +21,14 @@ const { Header, Sider, Content } = Layout;
 const Admin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1-1');
-  
+  const { id } = useParams(); // Получаем id из URL
+
+  useEffect(() => {
+    // Здесь можно использовать id для получения данных администратора
+    console.log('Admin ID:', id);
+    // Например, сделать запрос к API для получения данных администратора
+  }, [id]);
+
   // Кастомизация темы
   const theme = {
     components: {

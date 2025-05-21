@@ -78,3 +78,7 @@ th {
   border-radius: 5px;
   cursor: pointer;
 }
+
+.button-spacing {
+  margin-right: 10px;
+}

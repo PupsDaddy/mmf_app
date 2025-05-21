@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -7,15 +7,28 @@ import {
   BookOutlined
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import TeachersPreStudy from '../../components/TeachersPreStudy/TeachersPreStudy';
 
 const { Header, Sider, Content } = Layout;
 
 const Teachers = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState('1-1');
+  const [selectedKey, setSelectedKey] = useState('1-1'); // По умолчанию профиль
+  const { id } = useParams(); // Получаем id из URL
+  const location = useLocation(); // Получаем информацию о текущем URL
   
+  // Устанавливаем выбранный элемент в зависимости от текущего URL
+  useEffect(() => {
+    if (location.pathname.includes('profile')) {
+      setSelectedKey('1-1'); // Профиль
+    } else if (location.pathname.includes('schedule')) {
+      setSelectedKey('1-2'); // Расписание
+    } else if (location.pathname.includes('classes')) {
+      setSelectedKey('1-3'); // Занятия
+    }
+  }, [location]);
+
   // Кастомизация темы
   const theme = {
     components: {
@@ -93,17 +106,17 @@ const Teachers = () => {
               {
                 key: '1-1',
                 icon: <UserOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Личный кабинет</Link>,
+                label: <Link to={`/teachers/${id}`}>Личный кабинет</Link>,
               },
               {
                 key: '1-2',
                 icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Расписание</Link>,
+                label: <Link to={`/teachers/${id}`}>Расписание</Link>,
               },
               {
                 key: '1-3',
                 icon: <BookOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Занятия</Link>,
+                label: <Link to={`/teachers/${id}`}>Занятия</Link>,
               },
             ]}
           />
@@ -162,4 +175,4 @@ const Teachers = () => {
   );
 };
 
-export default  Teachers;
+export default Teachers;

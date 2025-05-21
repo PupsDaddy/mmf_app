@@ -1,32 +1,58 @@
-import React, { useEffect } from 'react';
-import { App } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { App, Modal, Select } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-const DeleteConfirmModal = ({ pair, onConfirm }) => {
+const DeleteConfirmModal = ({ pairs = [], onConfirm, onCancel }) => {
   const { modal } = App.useApp();
+  const [selectedPair, setSelectedPair] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    console.log('Pair object in modal:', pair);
-
-    modal.confirm({
-      title: 'Вы уверены, что хотите удалить эту пару?',
-      icon: <ExclamationCircleOutlined />,
-      content: (
+    if (pairs.length > 0 && !isModalOpen) {
+      setIsModalOpen(true);
+      const content = (
         <div>
-          <p>{`${pair.sub_name} | ${pair.class_type}${pair.sub_group ? ` | ${pair.sub_group}` : ''}`}</p>
-          <p style={{ color: '#1890ff', marginTop: '8px' }}>
-            ID записи: {pair.schedule_id || 'ID не найден'}
-          </p>
+          <Select
+            placeholder="Выберите пару для удаления"
+            style={{ width: '100%' }}
+            onChange={(value) => {
+              setSelectedPair(value);
+              console.log('Выбранный schedule_id:', value);
+            }}
+          >
+            {pairs.map(pair => (
+              <Select.Option key={pair.schedule_id} value={pair.schedule_id}>
+                {`${pair.sub_name} | ${pair.class_type} | ${pair.sub_group}`}
+              </Select.Option>
+            ))}
+          </Select>
         </div>
-      ),
-      okText: 'Да',
-      okType: 'danger',
-      cancelText: 'Нет',
-      onOk: onConfirm,
-    });
-  }, [pair, onConfirm, modal]);
+      );
 
-  return null; // Этот компонент не рендерит ничего видимого
+      modal.confirm({
+        title: 'Выберите пару для удаления',
+        icon: <ExclamationCircleOutlined />,
+        content: content,
+        okText: 'Удалить',
+        okType: 'danger',
+        cancelText: 'Отмена',
+        onOk: () => {
+          if (selectedPair) {
+            onConfirm(selectedPair);
+            setSelectedPair(null);
+          }
+          setIsModalOpen(false);
+        },
+        onCancel: () => {
+          onCancel();
+          setSelectedPair(null);
+          setIsModalOpen(false);
+        },
+      });
+    }
+  }, [pairs, modal, onConfirm, onCancel, isModalOpen]);
+
+  return null;
 };
 
 export default DeleteConfirmModal; 

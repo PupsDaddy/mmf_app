@@ -91,7 +91,11 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
   }, [refreshTrigger]);
 
   // Функции для поиска связанных данных
-  const getTeacherById = (id) => teachersList.find(teacher => teacher.id === id) || {};
+  const getTeacherById = (id) => {
+    if (!id) return {}; // Возвращаем пустой объект, если id не задан
+    const teacher = teachersList.find(teacher => teacher.id === id);
+    return teacher || { teacher_surname: 'Нет преподавателя', teacher_name: '', teacher_father_name: '' };
+  };
   const getSubSemById = (id) => subSemList.find(subSem => subSem.id === id) || {};
   const getSubjectById = (id) => subjectsList.find(sub => sub.id === id) || {};
   const getGroupById = (id) => groupsList.find(group => group.id === id) || {};
@@ -200,6 +204,11 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
 
   const handleModalOk = async () => {
     try {
+      if (!selectedRecord || !selectedRecord.id) {
+        console.error('No selected record to update');
+        return;
+      }
+      
       console.log(selectedRecord.id, { new_teacher_id: selectedTeacherId });
       
       // Выполняем запрос на обновление данных
@@ -210,18 +219,8 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
       // Закрываем модальное окно
       setIsModalVisible(false);
       
-      // Обновляем данные в состоянии
-      setAcademicData(prevData => {
-        return prevData.map(item => {
-          if (item.id === selectedRecord.id) {
-            return {
-              ...item,
-              teacher_id: selectedTeacherId // Обновляем только нужное поле
-            };
-          }
-          return item;
-        });
-      });
+      // Перезагружаем страницу
+      window.location.reload();
     } catch (error) {
       console.error('Error updating teacher:', error);
     }
@@ -513,7 +512,6 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
 };
 
 export default TeacherSubSemTable;
-
 
 
 

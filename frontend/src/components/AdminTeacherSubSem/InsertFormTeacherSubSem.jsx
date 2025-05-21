@@ -230,9 +230,3 @@ const InsertFormTeacherSubSem = forwardRef((props, ref) => {
 });
 
 export default InsertFormTeacherSubSem;
-
-
-
-
-
-

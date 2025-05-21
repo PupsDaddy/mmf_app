@@ -76,7 +76,8 @@
 
 .schedule-cell-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 4px;
   flex: 1;
 }
@@ -203,9 +204,9 @@
 }
 
 .add-pair-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
   background-color: transparent;
   border: 2px dashed black !important;
   color: black !important;
