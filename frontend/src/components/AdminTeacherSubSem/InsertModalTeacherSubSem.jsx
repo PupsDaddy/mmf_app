@@ -47,10 +47,7 @@ const InsertModalTeacherSubSem = ({ onSuccess }) => {
         
         setIsModalOpen(false);
         resetForm(); // Очищаем форму после успешного добавления
-        
-        // Перезагружаем страницу
-        window.location.reload(); // Это вызовет полную перезагрузку страницы
-        onSuccess();
+        onSuccess(); // Вызываем callback для обновления данных
       } catch (error) {
         console.error('Error in handleOk:', error);
         if (error.response) {

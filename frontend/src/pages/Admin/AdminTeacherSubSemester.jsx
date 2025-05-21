@@ -22,7 +22,7 @@ const AdminTeacherSubSemester = () => {
         <InsertModalTeacherSubSem onSuccess={handleInsertSuccess} />
       </Flex>
       <div style={{ width: '100%', overflowX: 'auto' }}>
-        <TeacherSubSemTable refreshTrigger={refreshTrigger} />
+        <TeacherSubSemTable refreshTrigger={handleInsertSuccess} />
       </div>
     </div>
   );

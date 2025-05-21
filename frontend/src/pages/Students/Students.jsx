@@ -4,17 +4,28 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
   CalendarOutlined,
-  BookOutlined
+  BookOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import Header from '../../components/Header';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
+
+// Компоненты для разных разделов
+const StudentProfile = () => <div>Личный кабинет студента</div>;
+const StudentScheduleComponent = () => <div>Расписание студента</div>;
+const StudentClassesComponent = () => <div>Занятия студента</div>;
 
 const Students = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState('1-1');
+  const { id } = useParams();
   
+  const onSelect = ({ key }) => {
+    setSelectedKey(key);
+  };
+
   // Кастомизация темы
   const theme = {
     components: {
@@ -40,20 +51,16 @@ const Students = () => {
     },
   };
 
-  const onSelect = ({ key }) => {
-    setSelectedKey(key);
-  };
-
   const renderContent = () => {
     switch (selectedKey) {
       case '1-1':
-        return <div>Личный кабинет студента</div>;
+        return <StudentProfile />;
       case '1-2':
-        return <div>Расписание</div>;
+        return <StudentScheduleComponent />;
       case '1-3':
-        return <div>Занятия студента</div>;
+        return <StudentClassesComponent />;
       default:
-        return null;
+        return <StudentProfile />;
     }
   };
 
@@ -92,58 +99,37 @@ const Students = () => {
               {
                 key: '1-1',
                 icon: <UserOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Личный кабинет</Link>,
+                label: 'Личный кабинет'
               },
               {
                 key: '1-2',
                 icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Расписание</Link>,
+                label: 'Расписание'
               },
               {
                 key: '1-3',
                 icon: <BookOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to="">Занятия</Link>,
+                label: 'Занятия'
               },
             ]}
           />
+          <Button
+            type="text"
+            icon={collapsed ? 
+              <MenuUnfoldOutlined style={{ fontSize: '24px', color: '#52c41a' }} /> : 
+              <MenuFoldOutlined style={{ fontSize: '24px', color: '#52c41a' }} />
+            }
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              width: '100%',
+              height: 48,
+              color: '#52c41a',
+              marginTop: 16
+            }}
+          />
         </Sider>
-        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
-          <Header style={{ 
-            padding: 0, 
-            background: '#1a3a1a',
-            borderBottom: '4px solid #52c41a',
-            height: '100px',
-            lineHeight: '100px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            position: 'fixed',
-            width: `calc(100% - ${collapsed ? 80 : 200}px)`,
-            zIndex: 1
-          }}>
-            <div style={{ 
-              color: '#52c41a', 
-              fontSize: '32px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>
-              MY_MMF
-            </div>
-            <Button
-              type="text"
-              icon={collapsed ? 
-                <MenuUnfoldOutlined style={{ fontSize: '24px' }} /> : 
-                <MenuFoldOutlined style={{ fontSize: '24px' }} />
-              }
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                width: 80,
-                height: 80,
-                color: '#52c41a'
-              }}
-            />
-          </Header>
+        <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s' }}>
+          <Header />
           <Content
             style={{
               margin: '124px 16px 24px',
@@ -161,4 +147,4 @@ const Students = () => {
   );
 };
 
-export default  Students;
+export default Students;

@@ -1,18 +1,76 @@
 .teachers-pre-study {
-  text-align: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.subjects-container {
+.teachers-pre-study-loading,
+.teachers-pre-study-empty {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  height: 400px;
+  gap: 16px;
+}
+
+.course-section {
+  margin-bottom: 40px;
 }
 
 .course-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 20px 0;
+  border-bottom: 2px solid #52c41a;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  color: #1a3a1a;
+}
+
+.subjects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.subject-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.subject-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.subject-details {
+  margin-bottom: 12px;
+  color: #666;
+}
+
+.subject-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .subjects-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .subjects-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 .subject-button {

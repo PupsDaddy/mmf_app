@@ -4,30 +4,27 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
   CalendarOutlined,
-  BookOutlined
+  BookOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, ConfigProvider } from 'antd';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import TeachersPreStudy from '../../components/TeachersPreStudy/TeachersPreStudy';
+import TeacherProfile from '../../components/TeacherProfile/TeacherProfile';
+import Header from '../../components/Header';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
+
+// Компоненты для разных разделов
+const TeacherScheduleComponent = () => <div>Расписание преподавателя</div>;
 
 const Teachers = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState('1-1'); // По умолчанию профиль
-  const { id } = useParams(); // Получаем id из URL
-  const location = useLocation(); // Получаем информацию о текущем URL
+  const [selectedKey, setSelectedKey] = useState('1-1');
+  const { id } = useParams();
   
-  // Устанавливаем выбранный элемент в зависимости от текущего URL
-  useEffect(() => {
-    if (location.pathname.includes('profile')) {
-      setSelectedKey('1-1'); // Профиль
-    } else if (location.pathname.includes('schedule')) {
-      setSelectedKey('1-2'); // Расписание
-    } else if (location.pathname.includes('classes')) {
-      setSelectedKey('1-3'); // Занятия
-    }
-  }, [location]);
+  const onSelect = ({ key }) => {
+    setSelectedKey(key);
+  };
 
   // Кастомизация темы
   const theme = {
@@ -54,20 +51,16 @@ const Teachers = () => {
     },
   };
 
-  const onSelect = ({ key }) => {
-    setSelectedKey(key);
-  };
-
   const renderContent = () => {
     switch (selectedKey) {
       case '1-1':
-        return <div>Личный кабинет преподавателя</div>;
+        return <TeacherProfile />;
       case '1-2':
-        return <div>Расписание</div>;
+        return <TeacherScheduleComponent />;
       case '1-3':
         return <TeachersPreStudy />;
       default:
-        return null;
+        return <TeacherProfile />;
     }
   };
 
@@ -106,58 +99,37 @@ const Teachers = () => {
               {
                 key: '1-1',
                 icon: <UserOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to={`/teachers/${id}`}>Личный кабинет</Link>,
+                label: 'Личный кабинет'
               },
               {
                 key: '1-2',
                 icon: <CalendarOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to={`/teachers/${id}`}>Расписание</Link>,
+                label: 'Расписание'
               },
               {
                 key: '1-3',
                 icon: <BookOutlined style={{ fontSize: '24px' }} />,
-                label: <Link to={`/teachers/${id}`}>Занятия</Link>,
+                label: 'Занятия'
               },
             ]}
           />
+          <Button
+            type="text"
+            icon={collapsed ? 
+              <MenuUnfoldOutlined style={{ fontSize: '24px', color: '#52c41a' }} /> : 
+              <MenuFoldOutlined style={{ fontSize: '24px', color: '#52c41a' }} />
+            }
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              width: '100%',
+              height: 48,
+              color: '#52c41a',
+              marginTop: 16
+            }}
+          />
         </Sider>
-        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
-          <Header style={{ 
-            padding: 0, 
-            background: '#1a3a1a',
-            borderBottom: '4px solid #52c41a',
-            height: '100px',
-            lineHeight: '100px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            position: 'fixed',
-            width: `calc(100% - ${collapsed ? 80 : 200}px)`,
-            zIndex: 1
-          }}>
-            <div style={{ 
-              color: '#52c41a', 
-              fontSize: '32px',
-              fontWeight: 'bold',
-              letterSpacing: '1px'
-            }}>
-              MY_MMF
-            </div>
-            <Button
-              type="text"
-              icon={collapsed ? 
-                <MenuUnfoldOutlined style={{ fontSize: '24px' }} /> : 
-                <MenuFoldOutlined style={{ fontSize: '24px' }} />
-              }
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                width: 80,
-                height: 80,
-                color: '#52c41a'
-              }}
-            />
-          </Header>
+        <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s' }}>
+          <Header />
           <Content
             style={{
               margin: '124px 16px 24px',

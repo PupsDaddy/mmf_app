@@ -150,3 +150,14 @@
 .teacher-sub-sem-table .ant-input {
   font-size: 16px;
 }
+
+.red-button {
+  background-color: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+  color: white !important;
+}
+
+.red-button:hover {
+  background-color: #ff7875 !important;
+  border-color: #ff7875 !important;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Select, Input, Button, Space, Modal } from 'antd';
+import { Table, Select, Input, Button, Space, Modal, message } from 'antd';
 import axios from 'axios';
 import './TeacherSubSemTable.css';
 
@@ -41,6 +41,9 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
   const [modalTeachers, setModalTeachers] = useState([]);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -219,10 +222,39 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
       // Закрываем модальное окно
       setIsModalVisible(false);
       
-      // Перезагружаем страницу
-      window.location.reload();
+      // Обновляем данные через refreshTrigger
+      if (typeof refreshTrigger === 'function') {
+        refreshTrigger();
+      }
     } catch (error) {
       console.error('Error updating teacher:', error);
+    }
+  };
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setIsDeleteModalVisible(true);
+    setErrorMessage('');
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/teachers_subjects_semester/${deleteId}`);
+      message.success('Запись успешно удалена');
+      setAcademicData(prevData => prevData.filter(item => item.id !== deleteId));
+      setIsDeleteModalVisible(false);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          setErrorMessage('Запись не найдена');
+        } else if (error.response.status === 409) {
+          setErrorMessage(error.response.data.detail);
+        } else {
+          setErrorMessage('Не удалось удалить запись');
+        }
+      } else {
+        setErrorMessage('Не удалось подключиться к серверу');
+      }
     }
   };
 
@@ -406,6 +438,18 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
           {type === 'L' ? 'Лекция' : 'Практика'}
         </span>
       )
+    },
+    {
+      title: 'Действия',
+      key: 'action',
+      render: (_, record) => (
+        <Button 
+          className="red-button"
+          onClick={() => handleDelete(record.id)}
+        >
+          Удалить
+        </Button>
+      )
     }
   ];
 
@@ -455,6 +499,22 @@ const TeacherSubSemTable = ({ refreshTrigger }) => {
         }}
         className="teacher-sub-sem-table"
       />
+
+      <Modal
+        title="Подтверждение удаления"
+        open={isDeleteModalVisible}
+        onOk={confirmDelete}
+        onCancel={() => setIsDeleteModalVisible(false)}
+        okText="Удалить"
+        cancelText="Отмена"
+      >
+        {errorMessage && (
+          <div style={{ color: 'red', marginBottom: 16 }}>
+            {errorMessage}
+          </div>
+        )}
+        <p>Вы уверены, что хотите удалить эту запись? Это действие нельзя будет отменить.</p>
+      </Modal>
 
       <Modal
         title="Изменить преподавателя"

@@ -3,17 +3,101 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  background: linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 100%);
+  padding: 20px;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.app-title {
+  color: #52c41a !important;
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  margin-bottom: 0 !important;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+.app-subtitle {
+  color: #ffffff !important;
+  font-weight: 300 !important;
+  margin-top: 8px !important;
 }
 
 .login-card {
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  padding: 20px;
 }
 
-.login-card .ant-card-head-title {
+.login-title {
   text-align: center;
-  font-size: 24px;
+  color: #1a3a1a !important;
+  margin-bottom: 24px !important;
+  font-weight: 600 !important;
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.login-input .ant-input,
+.login-input .ant-input-password {
+  height: 50px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+}
+
+.login-input .ant-input:focus,
+.login-input .ant-input-password:focus {
+  border-color: #52c41a;
+  box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.2);
+}
+
+.login-input .ant-input-prefix {
+  color: #1a3a1a;
+  margin-right: 10px;
+}
+
+.login-button {
+  height: 50px;
+  font-size: 18px;
   font-weight: 500;
+  border-radius: 6px;
+  background-color: #52c41a !important;
+  border-color: #52c41a !important;
+  margin-top: 16px;
+}
+
+.login-button:hover,
+.login-button:focus {
+  background-color: #73d13d !important;
+  border-color: #73d13d !important;
+}
+
+@media (max-width: 576px) {
+  .app-title {
+    font-size: 36px !important;
+  }
+
+  .app-subtitle {
+    font-size: 16px !important;
+  }
+
+  .login-card {
+    padding: 16px;
+  }
 }
